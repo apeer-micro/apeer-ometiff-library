@@ -1,6 +1,5 @@
 from skimage.external import tifffile
 import numpy as np
-import numpy as np
 import itertools as it
 
 from apeer_ometiff_library import omexmlClass
