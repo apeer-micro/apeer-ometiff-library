@@ -4,33 +4,32 @@ import numpy as np
 from apeer_ometiff_library import omexmlClass
 
 
-def readOmeTiff(input_path):
+def read_ometiff(input_path):
     with tifffile.TiffFile(input_path) as tif:
         array = tif.asarray()
-        omexmlString = tif[0].image_description.decode("utf-8")
+        omexml_string = tif[0].image_description.decode("utf-8")
 
     # Turn Ome XML String to an Bioformats object for parsing
-    metadata = omexmlClass.OMEXML(omexmlString)
+    metadata = omexmlClass.OMEXML(omexml_string)
 
     # Parse pixel sizes
     pixels = metadata.image(0).Pixels
-    SizeC = pixels.SizeC
-    SizeT = pixels.SizeT
-    SizeZ = pixels.SizeZ
-    SizeX = pixels.SizeX
-    SizeY = pixels.SizeY
-    pixels.DimensionOrder
+    size_c = pixels.SizeC
+    size_t = pixels.SizeT
+    size_z = pixels.SizeZ
+    size_x = pixels.SizeX
+    size_y = pixels.SizeY
 
     # Expand image array to 5D of order (T, Z, C, X, Y)
-    if SizeC == 1:
+    if size_c == 1:
         array = np.expand_dims(array, axis=-3)
-    if SizeZ == 1:
+    if size_z == 1:
         array = np.expand_dims(array, axis=-4)
-    if SizeT == 1:
+    if size_t == 1:
         array = np.expand_dims(array, axis=-5)
 
-    return (array, omexmlString)
+    return array, omexml_string
 
 
-def writeOmeTiff(outputPath, array, omexmlString):
-    tifffile.imsave(outputPath, array, description=omexmlString, metadata={'axes': 'TZCXY'})
+def write_ometiff(output_path, array, omexml_string):
+    tifffile.imsave(output_path, array, description=omexml_string, metadata={'axes': 'TZCXY'})
