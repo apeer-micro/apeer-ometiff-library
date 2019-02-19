@@ -3,6 +3,7 @@ import numpy as np
 
 from apeer_ometiff_library import omexmlClass
 
+
 def readOmeTiff(input_path):
     with tifffile.TiffFile(input_path) as tif:
         array = tif.asarray()
@@ -29,6 +30,7 @@ def readOmeTiff(input_path):
         array = np.expand_dims(array, axis=-5)
 
     return (array, omexmlString)
+
 
 def writeOmeTiff(outputPath, array, omexmlString):
     tifffile.imsave(outputPath, array, description=omexmlString, metadata={'axes': 'TZCXY'})
