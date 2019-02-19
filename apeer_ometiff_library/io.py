@@ -32,4 +32,4 @@ def read_ometiff(input_path):
 
 
 def write_ometiff(output_path, array, omexml_string):
-    tifffile.imsave(output_path, array, description=omexml_string, metadata={'axes': 'TZCXY'})
+    tifffile.imsave(output_path, array, photometric='minisblack', description=omexml_string, metadata={'axes': 'TZCXY'})
