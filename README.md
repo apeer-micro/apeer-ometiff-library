@@ -1,3 +1,7 @@
+[![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_apis/build/status/apeer-micro.apeer-ometiff-library?branchName=master)](https://dev.azure.com/apeer-micro/apeer-open-source/_build/latest?definitionId=2&branchName=master)
+
+-----
+
 # apeer-ometiff-library
 
 Easily read and write ome-tiff images in python
