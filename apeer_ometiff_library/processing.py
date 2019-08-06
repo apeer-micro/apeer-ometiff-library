@@ -16,7 +16,7 @@ def apply_2d_trafo(trafo_2d, array_5d, inputs, dtype=None):
 
 def apply_3d_trafo_zstack(trafo_3d, array_5d, inputs, dtype=None):
     array_out_5d = np.zeros_like(array_5d)
-    if not dtype == None:
+    if dtype != None:
         array_out_5d = array_out_5d.astype(dtype)
     n_t, n_z, n_c, n_x, n_y = np.shape(array_out_5d)
 
@@ -28,7 +28,7 @@ def apply_3d_trafo_zstack(trafo_3d, array_5d, inputs, dtype=None):
 
 def apply_3d_trafo_rgb(trafo_3d, array_5d, inputs, dtype=None):
     array_out_5d = np.zeros_like(array_5d)
-    if not dtype == None:
+    if dtype != None:
         array_out_5d = array_out_5d.astype(dtype)
     n_t, n_z, n_c, n_x, n_y = np.shape(array_out_5d)
 
