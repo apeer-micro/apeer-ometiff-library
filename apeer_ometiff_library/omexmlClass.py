@@ -404,6 +404,8 @@ class OMEXML(object):
                 self.root_node, qn(self.ns['sa'], "StructuredAnnotations"))
         return self.StructuredAnnotations(node)
 
+#----------------   Subclass   -----------------------------------------------------------
+
     class Image(object):
         '''Representation of the OME/Image element'''
 
