@@ -2,8 +2,10 @@ import itertools as it
 import numpy as np
 
 
-def apply_2d_trafo(trafo_2d, array_5d, inputs):
+def apply_2d_trafo(trafo_2d, array_5d, inputs, dtype=None):
     array_out_5d = np.zeros_like(array_5d)
+    if dtype!=None:
+        array_out_5d = array_out_5d.astype(dtype)
     n_t, n_z, n_c, n_x, n_y = np.shape(array_out_5d)
 
     for t, z, c in it.product(range(n_t), range(n_z), range(n_c)):
@@ -12,8 +14,10 @@ def apply_2d_trafo(trafo_2d, array_5d, inputs):
     return array_out_5d
 
 
-def apply_3d_trafo_zstack(trafo_3d, array_5d, inputs):
+def apply_3d_trafo_zstack(trafo_3d, array_5d, inputs, dtype=None):
     array_out_5d = np.zeros_like(array_5d)
+    if dtype != None:
+        array_out_5d = array_out_5d.astype(dtype)
     n_t, n_z, n_c, n_x, n_y = np.shape(array_out_5d)
 
     for t, c in it.product(range(n_t), range(n_c)):
@@ -22,8 +26,10 @@ def apply_3d_trafo_zstack(trafo_3d, array_5d, inputs):
     return array_out_5d
 
 
-def apply_3d_trafo_rgb(trafo_3d, array_5d, inputs):
+def apply_3d_trafo_rgb(trafo_3d, array_5d, inputs, dtype=None):
     array_out_5d = np.zeros_like(array_5d)
+    if dtype != None:
+        array_out_5d = array_out_5d.astype(dtype)
     n_t, n_z, n_c, n_x, n_y = np.shape(array_out_5d)
 
     for t, z in it.product(range(n_t), range(n_z)):
