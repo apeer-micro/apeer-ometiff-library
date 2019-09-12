@@ -11,7 +11,8 @@ from apeer_ometiff_library import io
 
 class TestsCore(unittest.TestCase):
 
-    def test_
+    def test_funcName_condition_expectedResult(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
