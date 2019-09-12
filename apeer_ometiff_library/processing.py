@@ -1,3 +1,5 @@
+import numpy as np
+import itertools as it
 
 def apply_2d_trafo(trafo_2d, array_5d, inputs):
     n_t, n_z, n_c, n_x, n_y = np.shape(array_5d)
