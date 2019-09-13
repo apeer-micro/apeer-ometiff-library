@@ -22,16 +22,5 @@ steps:
 
 - script: |
     python setup.py sdist bdist_wheel
-    twine upload --repository-url https://upload.pypi.org/legacy/ --username $env:PYPI_USERNAME --password $env:PYPI_PASSWORD dist/*
+    twine upload --username $(TWINE_USERNAME) --password $(TWINE_PASSWORD) --repository-url https://upload.pypi.org/legacy/  dist/*
   displayName: 'Publish to PyPi'
-
-  env:
-    PYPI_USERNAME: $(TWINE_USERNAME)
-    PYPI_PASSWORD: $(TWINE_PASSWORD)
-
-
-
-# - script: |
-#     pip install pytest pytest-azurepipelines
-#     pytest
-#   displayName: 'pytest'
