@@ -22,8 +22,12 @@ steps:
 
 - script: |
     python setup.py sdist bdist_wheel
-    twine upload --repository-url https://upload.pypi.org/legacy/ --username $(TWINE_USERNAME) --password $(TWINE_PASSWORD) dist/*
+    twine upload --repository-url https://upload.pypi.org/legacy/ --username $(PYPI_USERNAME) --password $(PYPI_PASSWORD) dist/*
   displayName: 'Publish to PyPi'
+
+  env:
+    PYPI_USERNAME: $(TWINE_USERNAME)
+    PYPI_PASSWORD: $(TWINE_PASSWORD)
 
 
 
