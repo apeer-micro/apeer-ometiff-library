@@ -22,10 +22,10 @@ steps:
 
 - script: |
     python setup.py sdist bdist_wheel
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
   displayName: 'Publish to PyPi'
 
-#twine upload -r {feedName/EndpointName} --config-file $(PYPIRC_PATH) {package path to publish}
-#twine upload --repository-url https://test.pypi.org/legacy/ --config-file $(PYPIRC_PATH) dist/*
+
 
 # - script: |
 #     pip install pytest pytest-azurepipelines
