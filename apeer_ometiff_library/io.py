@@ -66,7 +66,7 @@ def update_xml(omexml, Image_ID=None, Image_Name=None, Image_AcquisitionDate=Non
         metadata.image(0).Channel.SamplesPerPixel = Channel_SamplesPerPixel
 
     metadata = metadata.to_xml(encoding='utf-8')
-    
+    metadata = metadata.replace(" />", "/>")
     return metadata.replace("<ome:", "<").replace("</ome:", "</")
     #omexmlString = xml.dom.minidom.parseString(metadata)
     #return omexmlString.toprettyxml()
