@@ -1,4 +1,4 @@
-from skimage.external import tifffile
+from skimage.io import tifffile
 import numpy as np
 
 from apeer_ometiff_library import omexmlClass
@@ -36,36 +36,37 @@ def update_xml(omexml, Image_ID=None, Image_Name=None, Image_AcquisitionDate=Non
 
     metadata = omexmlClass.OMEXML(omexml)
 
-    if not Image_ID == None:
+    if Image_ID:
         metadata.image(0).Image.ID = Image_ID
-    if not Image_Name == None:
+    if Image_Name:
         metadata.image(0).Name = Image_Name
-    if not Image_AcquisitionDate == None:
+    if Image_AcquisitionDate:
         metadata.image(0).Image.AcquisitionDate = Image_AcquisitionDate
 
-    if not DimensionOrder == None:
+    if DimensionOrder:
         metadata.image(0).Pixels.DimensionOrder = DimensionOrder
-    if not dType == None:
+    if dType:
         metadata.image(0).Pixels.PixelType = dType
-    if not SizeT == None:
+    if SizeT:
         metadata.image(0).Pixels.SizeT = SizeT
-    if not SizeZ == None:
+    if SizeZ:
         metadata.image(0).Pixels.SizeZ = SizeZ
-    if not SizeC == None:
+    if SizeC:
         metadata.image(0).Pixels.SizeC = SizeC
-    if not SizeX == None:
+    if SizeX:
         metadata.image(0).Pixels.SizeX = SizeX
-    if not SizeY == None:
+    if SizeY:
         metadata.image(0).Pixels.SizeY = SizeY
 
-    if not Channel_ID == None:
+    if Channel_ID:
         metadata.image(0).Channel.ID = Channel_ID
-    if not Channel_Name == None:
+    if Channel_Name:
         metadata.image(0).Channel.Name = Channel_Name
-    if not Channel_SamplesPerPixel == None:
+    if Channel_SamplesPerPixel:
         metadata.image(0).Channel.SamplesPerPixel = Channel_SamplesPerPixel
 
     metadata = metadata.to_xml(encoding='utf-8')
+    
     return metadata.replace("<ome:", "<").replace("</ome:", "</")
     #omexmlString = xml.dom.minidom.parseString(metadata)
     #return omexmlString.toprettyxml()
