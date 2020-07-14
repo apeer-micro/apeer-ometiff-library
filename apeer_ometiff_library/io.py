@@ -1,13 +1,13 @@
-from skimage.external import tifffile
+import tifffile
 import numpy as np
-
+from xmltodict import parse
 from apeer_ometiff_library import omexmlClass
 
 
 def read_ometiff(input_path):
     with tifffile.TiffFile(input_path) as tif:
         array = tif.asarray()
-        omexml_string = tif[0].image_description.decode("utf-8")
+        omexml_string = tif.ome_metadata
 
     # Turn Ome XML String to an Bioformats object for parsing
     metadata = omexmlClass.OMEXML(omexml_string)
@@ -36,39 +36,85 @@ def update_xml(omexml, Image_ID=None, Image_Name=None, Image_AcquisitionDate=Non
 
     metadata = omexmlClass.OMEXML(omexml)
 
-    if not Image_ID == None:
-        metadata.image(0).Image.ID = Image_ID
-    if not Image_Name == None:
-        metadata.image(0).Name = Image_Name
-    if not Image_AcquisitionDate == None:
-        metadata.image(0).Image.AcquisitionDate = Image_AcquisitionDate
+    if Image_ID:
+        metadata.image().set_ID(Image_ID)
+    if Image_Name:
+        metadata.image().set_Name(Image_Name)
+    if Image_AcquisitionDate:
+        metadata.image().Image.AcquisitionDate = Image_AcquisitionDate
 
-    if not DimensionOrder == None:
-        metadata.image(0).Pixels.DimensionOrder = DimensionOrder
-    if not dType == None:
-        metadata.image(0).Pixels.PixelType = dType
-    if not SizeT == None:
-        metadata.image(0).Pixels.SizeT = SizeT
-    if not SizeZ == None:
-        metadata.image(0).Pixels.SizeZ = SizeZ
-    if not SizeC == None:
-        metadata.image(0).Pixels.SizeC = SizeC
-    if not SizeX == None:
-        metadata.image(0).Pixels.SizeX = SizeX
-    if not SizeY == None:
-        metadata.image(0).Pixels.SizeY = SizeY
+    if DimensionOrder:
+        metadata.image().Pixels.DimensionOrder = DimensionOrder
+    if dType:
+        metadata.image().Pixels.PixelType = dType
+    if SizeT:
+        metadata.image().Pixels.set_SizeT(SizeT)
+    if SizeZ:
+        metadata.image().Pixels.set_SizeZ(SizeZ)
+    if SizeC:
+        metadata.image().Pixels.set_SizeC(SizeC)
+    if SizeX:
+        metadata.image().Pixels.set_SizeX(SizeX)
+    if SizeY:
+        metadata.image().Pixels.set_SizeY(SizeY)
 
-    if not Channel_ID == None:
-        metadata.image(0).Channel.ID = Channel_ID
-    if not Channel_Name == None:
-        metadata.image(0).Channel.Name = Channel_Name
-    if not Channel_SamplesPerPixel == None:
-        metadata.image(0).Channel.SamplesPerPixel = Channel_SamplesPerPixel
+    if Channel_ID:
+        metadata.image().Channel.ID = Channel_ID
+    if Channel_Name:
+        metadata.image().Channel.Name = Channel_Name
+    if Channel_SamplesPerPixel:
+        metadata.image().Channel.SamplesPerPixel = Channel_SamplesPerPixel
+    
+    metadata = metadata.to_xml().encode()
+    
+    return metadata
 
-    metadata = metadata.to_xml(encoding='utf-8')
-    return metadata.replace("<ome:", "<").replace("</ome:", "</")
-    #omexmlString = xml.dom.minidom.parseString(metadata)
-    #return omexmlString.toprettyxml()
 
-def write_ometiff(output_path, array, omexml_string):
-    tifffile.imsave(output_path, array, photometric='minisblack', description=omexml_string, metadata={'axes': 'TZCXY'})
+def gen_xml(array):
+    
+    #Dimension order is assumed to be TZCYX
+    dim_order = "TZCYX"
+    
+    metadata = omexmlClass.OMEXML()
+    shape = array.shape
+    assert ( len(shape) == 5), "Expected array of 5 dimensions"
+    
+    metadata.image().set_Name("IMAGE")
+    metadata.image().set_ID("0")
+    
+    pixels = metadata.image().Pixels
+    pixels.ome_uuid = metadata.uuidStr
+    pixels.set_ID("0")
+    
+    pixels.channel_count = shape[2]
+    
+    pixels.set_SizeT(shape[0])
+    pixels.set_SizeZ(shape[1])
+    pixels.set_SizeC(shape[2])
+    pixels.set_SizeY(shape[3])
+    pixels.set_SizeX(shape[4])
+    
+    pixels.set_DimensionOrder(dim_order[::-1])
+    
+    pixels.set_PixelType(omexmlClass.get_pixel_type(array.dtype))
+    
+    for i in range(pixels.SizeC):
+        pixels.Channel(i).set_ID("Channel:0:" + str(i))
+        pixels.Channel(i).set_Name("C:" + str(i))
+    
+    for i in range(pixels.SizeC):
+        pixels.Channel(i).set_SamplesPerPixel(1)
+        
+    pixels.populate_TiffData()
+    
+    return metadata.to_xml().encode()
+    
+
+
+def write_ometiff(output_path, array, omexml_string = None):
+    
+    if omexml_string is None:
+        omexml_string = gen_xml(array)
+        
+    tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata = None)
+    

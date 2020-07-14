@@ -24,7 +24,7 @@ def apply_3d_trafo_zstack(trafo_3d, array_5d, **kwargs):
     for t, c in it.product(range(n_t), range(n_c)):
         result = trafo_3d(array_5d[t, :, c, :, :], **kwargs)
         if firstIteration:
-            array_out_5d = np.zeros_like(array_out_5d[t, :, c, :, :], **kwargs)
+            array_out_5d = np.zeros_like(array_5d, **kwargs)
         firstIteration = False
         array_out_5d[t, :, c, :, :] = result
 
@@ -32,14 +32,14 @@ def apply_3d_trafo_zstack(trafo_3d, array_5d, **kwargs):
 
 
 def apply_3d_trafo_rgb(trafo_3d, array_5d, **kwargs):
-    n_t, n_z, n_c, n_x, n_y = np.shape(array_5d)
-    array_out_5d = None
+    n_t, n_z, n_c, n_x, n_y = array_5d.shape
+    array_out_5d = np.zeros_like(array5d, **kwargs)
     firstIteration = True
 
     for t, z in it.product(range(n_t), range(n_z)):
         result = trafo_3d(array_5d[t, z, :, :, :], **kwargs)
         if firstIteration:
-            array_out_5d = np.zeros_like(array_out_5d[t, z, :, :, :], **kwargs)
+            array_out_5d = array_out_5d.astype(result.dtype)
         firstIteration = False
         array_out_5d[t, z, :, :, :] = result
 
