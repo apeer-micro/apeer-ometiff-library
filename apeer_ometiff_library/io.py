@@ -1,6 +1,5 @@
 import tifffile
 import numpy as np
-from xmltodict import parse
 from apeer_ometiff_library import omexmlClass
 
 
