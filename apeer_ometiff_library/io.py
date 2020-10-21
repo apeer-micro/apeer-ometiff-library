@@ -1,7 +1,6 @@
 import tifffile
 import numpy as np
-from apeer_ometiff_library import omexmlClass
-from xmltodict import parse
+from apeer_ometiff_library import omexmlClass 
 
 
 def read_ometiff(input_path):
