@@ -2,12 +2,12 @@ import setuptools
 from setuptools import setup
 
 setup(name='apeer-ometiff-library',
-      version='1.7.1',
+      version='1.7.2',
       description='Library to read and write ometiff images',
       url='https://github.com/apeer-micro/apeer-ometiff-library',
       author='apeer-micro',
       packages=setuptools.find_packages(),
-      install_requires=['numpy', 'scikit-image'],
+      install_requires=['numpy','xmltodict','tifffile'],
       license='MIT',
       classifiers=[
           "Programming Language :: Python :: 3",
