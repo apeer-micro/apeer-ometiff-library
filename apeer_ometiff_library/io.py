@@ -1,6 +1,7 @@
 import tifffile
 import numpy as np
 from apeer_ometiff_library import omexmlClass
+from xmltodict import parse
 
 
 def read_ometiff(input_path):
@@ -26,6 +27,28 @@ def read_ometiff(input_path):
         array = np.expand_dims(array, axis=-4)
     if size_t == 1:
         array = np.expand_dims(array, axis=-5)
+
+    # Makes sure to return the array in (T, Z, C, X, Y) order
+
+    dim_format = pixels.DimensionOrder
+
+    if dim_format == "XYCZT":
+        pass
+    elif dim_format == "XYZCT":
+        array = np.moveaxis(array, 1, 2)
+    elif dim_format == "XYCTZ":
+        array = np.moveaxis(array, 0, 1)
+    elif dim_format == "XYZTC":
+        array = np.moveaxis(array, 0, 2)
+    elif dim_format == "XYTZC":
+        array = np.moveaxis(array, 0, 2)
+        array = np.moveaxis(array, 0, 1)
+    elif dim_format == "XYTCZ":
+        array = np.moveaxis(array, 1, 2)
+        array = np.moveaxis(array, 0, 1)
+    else:
+        print(array.shape)
+        raise Exception("Unknow dimension format") 
 
     return array, omexml_string
 
