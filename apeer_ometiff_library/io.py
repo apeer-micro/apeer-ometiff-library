@@ -132,10 +132,24 @@ def gen_xml(array):
     
 
 
-def write_ometiff(output_path, array, omexml_string = None):
-    
+def write_ometiff(output_path, array, omexml_string = None, compression=None):
+    """
+    Predict the given tiles and return the predictions
+
+    Parameters
+    ----------
+    output_path : str
+        Path where to save the ome.tiff
+    array : np.ndarray
+        5D array containing ome.tiff data, order should be TZCYX
+    omexml_string : Optional[encoded xml]
+        encoded XML Metadata, will be generated if not provided.
+    compression : str
+        possible values listed here: 
+        https://github.com/cgohlke/tifffile/blob/f55fc8a49c2ad30697a6b1760d5a325533574ad8/tifffile/tifffile.py#L12131
+    """
     if omexml_string is None:
         omexml_string = gen_xml(array)
         
-    tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata = None)
+    tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata = None, compression=compression)
     
