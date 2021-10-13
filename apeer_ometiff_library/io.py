@@ -134,7 +134,7 @@ def gen_xml(array):
 
 def write_ometiff(output_path, array, omexml_string = None, compression=None):
     """
-    Predict the given tiles and return the predictions
+    Write the given 5D array as an ome.tiff
 
     Parameters
     ----------
