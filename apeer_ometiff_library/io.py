@@ -153,8 +153,8 @@ def write_ometiff(output_path, array, omexml_string = None, compression=None):
         omexml_string = gen_xml(array)
         
     if sys.version < "3.7":
-        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata = None,
+        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
                          compress=compression)
     else:
-        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata = None
-                         , compression=compression)
+        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
+                         compression=compression)
