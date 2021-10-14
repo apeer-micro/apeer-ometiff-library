@@ -1,5 +1,6 @@
 import tifffile
 import numpy as np
+import sys
 from apeer_ometiff_library import omexmlClass 
 
 
@@ -146,10 +147,14 @@ def write_ometiff(output_path, array, omexml_string = None, compression=None):
         encoded XML Metadata, will be generated if not provided.
     compression : str
         possible values listed here: 
-        https://github.com/cgohlke/tifffile/blob/f55fc8a49c2ad30697a6b1760d5a325533574ad8/tifffile/tifffile.py#L12131
+        https://github.com/cgohlke/tifffile/blob/f55fc8a49c2ad30697a6b1760d5a325533574ad8/tifffile/tifffile.py#L12131 
     """
     if omexml_string is None:
         omexml_string = gen_xml(array)
         
-    tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata = None, compress=compression)
-    
+    if sys.version < "3.7":
+        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
+                         compress=compression)
+    else:
+        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
+                         compression=compression)
