@@ -20,35 +20,61 @@ def read_ometiff(input_path):
     size_x = pixels.SizeX
     size_y = pixels.SizeY
 
-    # Expand image array to 5D of order (T, Z, C, X, Y)
-    if size_c == 1:
-        array = np.expand_dims(array, axis=-3)
-    if size_z == 1:
-        array = np.expand_dims(array, axis=-4)
-    if size_t == 1:
-        array = np.expand_dims(array, axis=-5)
-
-    # Makes sure to return the array in (T, Z, C, X, Y) order
-
+    # Expand image array to 5D and make sure to return the array in (T, Z, C, X, Y) order
     dim_format = pixels.DimensionOrder
 
     if dim_format == "XYCZT":
-        pass
+        if size_c == 1:
+            array = np.expand_dims(array, axis=-3)
+        if size_z == 1:
+            array = np.expand_dims(array, axis=-4)
+        if size_t == 1:
+            array = np.expand_dims(array, axis=-5)
     elif dim_format == "XYZCT":
+        if size_z == 1:
+            array = np.expand_dims(array, axis=-3)
+        if size_c == 1:
+            array = np.expand_dims(array, axis=-4)
+        if size_t == 1:
+            array = np.expand_dims(array, axis=-5)
         array = np.moveaxis(array, 1, 2)
     elif dim_format == "XYCTZ":
+        if size_c == 1:
+            array = np.expand_dims(array, axis=-3)
+        if size_t == 1:
+            array = np.expand_dims(array, axis=-4)
+        if size_z == 1:
+            array = np.expand_dims(array, axis=-5)
         array = np.moveaxis(array, 0, 1)
     elif dim_format == "XYZTC":
+        if size_z == 1:
+            array = np.expand_dims(array, axis=-3)
+        if size_t == 1:
+            array = np.expand_dims(array, axis=-4)
+        if size_c == 1:
+            array = np.expand_dims(array, axis=-5)
         array = np.moveaxis(array, 0, 2)
     elif dim_format == "XYTZC":
+        if size_t == 1:
+            array = np.expand_dims(array, axis=-3)
+        if size_z == 1:
+            array = np.expand_dims(array, axis=-4)
+        if size_c == 1:
+            array = np.expand_dims(array, axis=-5)
         array = np.moveaxis(array, 0, 2)
         array = np.moveaxis(array, 0, 1)
     elif dim_format == "XYTCZ":
+        if size_t == 1:
+            array = np.expand_dims(array, axis=-3)
+        if size_c == 1:
+            array = np.expand_dims(array, axis=-4)
+        if size_z == 1:
+            array = np.expand_dims(array, axis=-5)
         array = np.moveaxis(array, 1, 2)
         array = np.moveaxis(array, 0, 1)
     else:
         print(array.shape)
-        raise Exception("Unknow dimension format") 
+        raise Exception("Unknow dimension format")
 
     return array, omexml_string
 
