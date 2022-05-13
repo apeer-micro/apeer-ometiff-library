@@ -1,2 +1,2 @@
-numpy==1.16.5
+numpy==1.21.0
 tifffile==2020.9.3
