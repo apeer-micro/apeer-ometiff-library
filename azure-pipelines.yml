@@ -18,7 +18,8 @@ steps:
     python -m pip install --upgrade pip
     pip install .
     pip install twine setuptools wheel
-  displayName: 'Install dependencies'
+    python -m unittest discover tests/
+  displayName: 'Install dependencies and run tests'
 
 - script: |
     python setup.py sdist bdist_wheel
