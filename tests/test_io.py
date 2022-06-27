@@ -8,8 +8,8 @@ import tifffile
 
 from apeer_ometiff_library.io import OmeTiffFile, write_ometiff
 
-# Change to False if you want to skip log running tests
-_RUN_SLOW_TESTS = True
+# Change to True if you want to include log running tests in the test suite
+_RUN_SLOW_TESTS = False
 
 
 class TestOmeTiffFile(unittest.TestCase):
