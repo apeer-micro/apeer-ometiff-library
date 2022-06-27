@@ -43,9 +43,9 @@ class OmeTiffFile:
         omexml_string = self._tiff_file.ome_metadata
         arrays = [
             _ensure_correct_dimensions(
-                self._tiff_file.asarray(series=series), omexml_string
+                self._tiff_file.asarray(key=image_key), omexml_string
             )
-            for series in range(
+            for image_key in range(
                 omexmlClass.OMEXML(self._tiff_file.ome_metadata).image_count
             )
         ]
