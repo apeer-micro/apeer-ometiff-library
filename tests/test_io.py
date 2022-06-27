@@ -1,3 +1,4 @@
+import math
 import os
 import unittest
 from pathlib import Path
@@ -6,6 +7,9 @@ import numpy as np
 import tifffile
 
 from apeer_ometiff_library.io import OmeTiffFile, write_ometiff
+
+# Change to False if you want to skip log running tests
+_RUN_SLOW_TESTS = True
 
 
 class TestOmeTiffFile(unittest.TestCase):
@@ -18,7 +22,6 @@ class TestOmeTiffFile(unittest.TestCase):
         self.ometiff_path.touch()
         self.ometiff_array = 255 * np.ones((2, 3, 4, 32, 64), np.uint8)
         write_ometiff(str(self.ometiff_path), self.ometiff_array)
-
 
     def _set_up_multi_series_ometiff(self):
         self.multi_series_ometiff_path = Path("multi_series_tmp.ome.tiff")
@@ -61,7 +64,9 @@ class TestOmeTiffFile(unittest.TestCase):
                 metadata={},
             )
 
-        with tifffile.TiffWriter(self.multi_series_ometiff_path, append=True) as tiff_writer:
+        with tifffile.TiffWriter(
+            self.multi_series_ometiff_path, append=True
+        ) as tiff_writer:
             tiff_writer.save(
                 self.multi_series_ometiff_array1,
                 photometric="minisblack",
@@ -93,10 +98,20 @@ class TestOmeTiffFile(unittest.TestCase):
                 [self.multi_series_ometiff_array0, self.multi_series_ometiff_array1],
             )
 
+
 class TestOmeTiffWrite(unittest.TestCase):
     def setUp(self) -> None:
-        self._test_array = np.ones((1, 7, 2, 256, 256))
-        self._output_path = 'test.ome.tiff'
+        self._test_array = np.ones((1, 7, 2, 256, 256), dtype=np.uint8)
+        self._output_path = "test.ome.tiff"
+        self._big_test_array = None
+
+    def _set_up_big_test_array(self):
+        if self._big_test_array is not None:
+            return
+        # size of a square uint8 image that would be 4GB, hence will be treated as bigtiff upon a save
+        square_bigtiff_size = int(math.sqrt(4 * 2**30))
+        biggtiff_shape = (1, 1, 1, square_bigtiff_size, square_bigtiff_size)
+        self._big_test_array = np.random.randint(0, 255, biggtiff_shape, dtype=np.uint8)
 
     def test_write(self):
         write_ometiff(output_path=self._output_path, array=self._test_array)
@@ -106,9 +121,43 @@ class TestOmeTiffWrite(unittest.TestCase):
             np.testing.assert_equal(array, self._test_array)
 
     def test_write_compress(self):
-        write_ometiff(output_path=self._output_path, array=self._test_array, compression="adobe_deflate")
+        write_ometiff(
+            output_path=self._output_path,
+            array=self._test_array,
+            compression="adobe_deflate",
+        )
 
         with OmeTiffFile(self._output_path) as ome_tiff_file:
             array, omexml_string = ome_tiff_file.read()
             np.testing.assert_equal(array, self._test_array)
+            os.remove(self._output_path)
+
+    @unittest.skipUnless(
+        _RUN_SLOW_TESTS,
+        "Test is skipped by default because it is slow due to bigtiff data",
+    )
+    def test_write_bigtiff(self):
+        self._set_up_big_test_array()
+        write_ometiff(output_path=self._output_path, array=self._big_test_array)
+
+        with OmeTiffFile(self._output_path) as ome_tiff_file:
+            array, omexml_string = ome_tiff_file.read()
+            np.testing.assert_equal(array, self._big_test_array)
+            os.remove(self._output_path)
+
+    @unittest.skipUnless(
+        _RUN_SLOW_TESTS,
+        "Test is skipped by default because it is slow due to bigtiff data",
+    )
+    def test_write_bigtiff_compress(self):
+        self._set_up_big_test_array()
+        write_ometiff(
+            output_path=self._output_path,
+            array=self._big_test_array,
+            compression="adobe_deflate",
+        )
+
+        with OmeTiffFile(self._output_path) as ome_tiff_file:
+            array, omexml_string = ome_tiff_file.read()
+            np.testing.assert_equal(array, self._big_test_array)
             os.remove(self._output_path)

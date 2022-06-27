@@ -1,3 +1,4 @@
+import struct
 from pathlib import Path
 from types import TracebackType
 from typing import Union, Optional, Type, Tuple, List
@@ -230,6 +231,11 @@ def write_ometiff(output_path, array, omexml_string = None, compression=None):
     if omexml_string is None:
         omexml_string = gen_xml(array)
 
-    tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
-                     compress=compression)
+    try:
+        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
+                         compress=compression)
+    except struct.error:
+        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
+                         compress=compression, bigtiff=True)
+
 
