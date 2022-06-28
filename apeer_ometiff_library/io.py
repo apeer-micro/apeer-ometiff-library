@@ -1,3 +1,4 @@
+import struct
 from pathlib import Path
 from types import TracebackType
 from typing import Union, Optional, Type, Tuple, List
@@ -43,9 +44,9 @@ class OmeTiffFile:
         omexml_string = self._tiff_file.ome_metadata
         arrays = [
             _ensure_correct_dimensions(
-                self._tiff_file.asarray(series=series), omexml_string
+                self._tiff_file.asarray(key=image_key), omexml_string
             )
-            for series in range(
+            for image_key in range(
                 omexmlClass.OMEXML(self._tiff_file.ome_metadata).image_count
             )
         ]
@@ -230,9 +231,8 @@ def write_ometiff(output_path, array, omexml_string = None, compression=None):
     if omexml_string is None:
         omexml_string = gen_xml(array)
 
-    if sys.version < "3.7":
-        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
-                         compress=compression)
-    else:
-        tifffile.imwrite(output_path, array,  photometric = "minisblack", description=omexml_string, metadata=None,
-                         compression=compression)
+    data_limit_nbytes = 2 ** 32
+    tiff_metadata_nbytes = 2 ** 25
+    bigtiff = array.nbytes > data_limit_nbytes - tiff_metadata_nbytes
+    tifffile.imwrite(output_path, array, photometric="minisblack", description=omexml_string, metadata=None,
+                     compress=compression, bigtiff=bigtiff)
