@@ -7,7 +7,7 @@ setup(name='apeer-ometiff-library',
       url='https://github.com/apeer-micro/apeer-ometiff-library',
       author='apeer-micro',
       packages=setuptools.find_packages(),
-      install_requires=['numpy>=1.18.5','tifffile==2020.6.3', 'imagecodecs==2020.5.30'],
+      install_requires=['numpy>=1.18.5','tifffile==2020.6.3', 'imagecodecs>=2020.5.30'],
       license='MIT',
       classifiers=[
           "Programming Language :: Python :: 3",
